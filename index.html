@@ -3,67 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Olgunlar Tarım Pro v2 - Çınar Yazılım</title>
+    <title>Olgunlar Tarım Pro - Çınar Yazılım</title>
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background: #f0f2f5; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        header { background: #fff; padding: 15px; border-bottom: 3px solid #27ae60; text-align: center; }
-        main { display: flex; flex: 1; }
-        
-        /* Sol Menü */
-        nav { width: 250px; background: #fff; padding: 15px; display: flex; flex-direction: column; gap: 10px; border-right: 1px solid #ddd; }
-        .menu-btn { padding: 15px; border-radius: 8px; color: white; border: none; font-weight: bold; cursor: pointer; font-size: 14px; }
-        .btn-satis { background: #3498db; }
-        .btn-stok { background: #2ecc71; }
-        .btn-kasa { background: #e74c3c; }
-
-        /* Sağ Alan */
-        .content { flex: 1; padding: 20px; overflow-y: auto; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
-        
-        /* Satış Formu */
-        #satis-form { background: #fff; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: none; border-left: 5px solid #3498db; }
-        input, select { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 5px; }
-        .btn-onay { background: #27ae60; color: white; padding: 10px; width: 100%; border: none; border-radius: 5px; margin-top: 10px; cursor: pointer; }
-    </style>
 </head>
 <body>
 
 <header>
-    <h1 style="color:#27ae60">OLGUNLAR TARIM PRO</h1>
-    <small>Kasa Durumu: <span id="kasa-toplam">0</span> TL</small>
+    <h1>OLGUNLAR TARIM PRO</h1>
+    <p>Kasa: <span id="kasa-toplam">0</span> TL</p>
 </header>
 
 <main>
     <nav>
-        <button class="menu-btn btn-satis" onclick="panelAc('satis-form')">YENİ SATIŞ</button>
-        <button class="menu-btn btn-stok" onclick="panelAc('dashboard')">GENEL DURUM</button>
-        <button class="menu-btn btn-kasa">GÜNLÜK RAPOR</button>
+        <button class="menu-btn btn-satis" onclick="panelAc('satis-panel')">YENİ SATIŞ</button>
+        <button class="menu-btn btn-stok" onclick="panelAc('dashboard')">STOKLAR</button>
+        <button class="menu-btn btn-kasa">VERESİYE DEFTERİ</button>
     </nav>
 
     <div class="content">
-        <div id="satis-form">
-            <h3>Hızlı Satış Paneli</h3>
-            <select id="urun">
-                <option value="850">Üre Gübresi (850 TL)</option>
-                <option value="1200">DAP Gübresi (1200 TL)</option>
-                <option value="450">Ot İlacı (450 TL)</option>
-            </select>
-            <input type="number" id="adet" placeholder="Adet/Çuval Giriniz">
-            <button class="btn-onay" onclick="satisYap()">SATIŞI ONAYLA</button>
+        <div id="satis-panel" style="display:none;">
+            <div class="card">
+                <h3>Hızlı Satış</h3>
+                <select id="urun-liste">
+                    <option value="900">Üre Gübresi (900 TL)</option>
+                    <option value="1300">DAP Gübresi (1300 TL)</option>
+                    <option value="500">Sıvı Gübre (500 TL)</option>
+                </select>
+                <input type="number" id="satis-adet" placeholder="Miktar (Adet)">
+                <button class="btn-onay" onclick="satisYap()">SATIŞI TAMAMLA</button>
+            </div>
         </div>
 
-        <div id="dashboard" class="grid">
+        <div id="dashboard">
             <div class="card">
-                <h3>Genel Stok</h3>
-                <canvas id="stokChart"></canvas>
-            </div>
-            <div class="card" style="background: #e74c3c; color: white;">
-                <h3>Borçlu Listesi</h3>
-                <p>Ali Dayı: 15.000 TL</p>
-                <p>Mehmet Emmi: 4.200 TL</p>
+                <h3>Genel Stok Durumu</h3>
+                <canvas id="stokGrafik"></canvas>
             </div>
         </div>
     </div>
@@ -71,41 +46,35 @@
 
 <script>
     let kasa = 0;
-    let stok = 100;
+    let mevcutStok = 100;
 
     function panelAc(id) {
-        document.getElementById('satis-form').style.display = (id === 'satis-form') ? 'block' : 'none';
-        document.getElementById('dashboard').style.display = (id === 'dashboard') ? 'grid' : 'none';
+        document.getElementById('satis-panel').style.display = (id === 'satis-panel' ? 'block' : 'none');
+        document.getElementById('dashboard').style.display = (id === 'dashboard' ? 'block' : 'none');
     }
 
     function satisYap() {
-        const fiyat = document.getElementById('urun').value;
-        const adet = document.getElementById('adet').value;
+        let fiyat = document.getElementById('urun-liste').value;
+        let adet = document.getElementById('satis-adet').value;
         if(adet > 0) {
-            const toplam = fiyat * adet;
-            kasa += toplam;
-            stok -= (adet * 2); // Temsili stok düşüşü
+            kasa += (fiyat * adet);
+            mevcutStok -= (adet * 2);
             document.getElementById('kasa-toplam').innerText = kasa;
-            updateChart();
-            alert("Satış Başarılı! Toplam: " + toplam + " TL");
-            document.getElementById('adet').value = "";
+            myChart.data.datasets[0].data = [mevcutStok, 100 - mevcutStok];
+            myChart.update();
+            alert("Satış Kaydedildi!");
+            panelAc('dashboard');
         }
     }
 
-    // Grafik
-    const ctx = document.getElementById('stokChart').getContext('2d');
-    let myChart = new Chart(ctx, {
+    const ctx = document.getElementById('stokGrafik').getContext('2d');
+    const myChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Dolu', 'Boş'],
-            datasets: [{ data: [stok, 100-stok], backgroundColor: ['#2ecc71', '#eee'] }]
+            labels: ['Stokta', 'Satılan'],
+            datasets: [{ data: [mevcutStok, 0], backgroundColor: ['#2ecc71', '#eee'] }]
         }
     });
-
-    function updateChart() {
-        myChart.data.datasets[0].data = [stok, 100-stok];
-        myChart.update();
-    }
 </script>
 
 </body>
