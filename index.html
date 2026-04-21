@@ -3,47 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Olgunlar Tarım Pro - Çınar Yazılım</title>
+    <title>Olgunlar Tarım Pro - Tam Sürüm</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
+    <header>
+        <h1>OLGUNLAR TARIM PRO</h1>
+        <p>Kasa: <span id="kasa-toplam">0</span> TL</p>
+    </header>
 
-<header>
-    <h1>OLGUNLAR TARIM PRO</h1>
-    <p>Kasa: <span id="kasa-toplam">0</span> TL</p>
-</header>
+    <main>
+        <div id="kamera-cerceve" style="display: none; text-align: center; margin: 10px;">
+            <video id="video" width="100%" autoplay playsinline style="border-radius: 15px; border: 3px solid #27ae60; max-width: 400px;"></video>
+            <p id="tarama-sonuc" style="font-weight:bold; color:#e67e22;"></p>
+        </div>
 
-<main>
-    <nav>
-        <button class="menu-btn btn-satis" onclick="panelAc('satis-panel')">YENİ SATIŞ</button>
-        <button class="menu-btn btn-stok" onclick="panelAc('dashboard')">STOKLAR</button>
-        <button class="menu-btn btn-kasa">VERESİYE DEFTERİ</button>
-    </nav>
+        <nav style="display: flex; flex-direction: column; gap: 10px; padding: 20px;">
+            <button class="menu-btn" style="background:#3498db; color:white; padding:15px; border-radius:8px;" onclick="panelAc('satis-panel')">💰 SATIŞ YAP / WHATSAPP</button>
+            <button class="menu-btn" style="background:#e67e22; color:white; padding:15px; border-radius:8px;" onclick="panelAc('kamera-cerceve')">📸 QR İLE STOK EKLE / SATIŞ</button>
+            <button class="menu-btn" style="background:#2ecc71; color:white; padding:15px; border-radius:8px;" onclick="panelAc('dashboard')">📊 STOK DURUMU & RAPOR</button>
+            <button class="menu-btn" style="background:#9b59b6; color:white; padding:15px; border-radius:8px;" onclick="pdfIndir()">📄 PDF RAPOR AL</button>
+            <button class="menu-btn" style="background:#27ae60; color:white; padding:15px; border-radius:8px;" onclick="excelIndir()">Excel TABLOSU AL</button>
+        </nav>
 
-    <div class="content">
-        <div id="satis-panel" style="display:none;">
-            <div class="card">
-                <h3>Hızlı Satış</h3>
-                <select id="urun-liste">
+        <div id="satis-panel" style="display:none; padding:20px;">
+            <div class="card" style="background:white; padding:15px; border-radius:10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <h3>Hızlı Satış ve Müşteri Bilgi</h3>
+                <input type="text" id="musteri-tel" placeholder="Müşteri Tel (905...)" style="width:100%; padding:10px; margin-bottom:10px;">
+                <select id="urun-liste" style="width:100%; padding:10px; margin-bottom:10px;">
                     <option value="900">Üre Gübresi (900 TL)</option>
                     <option value="1300">DAP Gübresi (1300 TL)</option>
-                    <option value="500">Sıvı Gübre (500 TL)</option>
                 </select>
-                <input type="number" id="satis-adet" placeholder="Miktar (Adet)">
-                <button class="btn-onay" onclick="satisYap()">SATIŞI TAMAMLA</button>
+                <input type="number" id="satis-adet" placeholder="Miktar" style="width:100%; padding:10px; margin-bottom:10px;">
+                <button style="width:100%; background:#27ae60; color:white; padding:10px; border-radius:5px;" onclick="satisVeWhatsapp()">SATIŞ YAP & WHATSAPP GÖNDER</button>
             </div>
         </div>
 
-        <div id="dashboard">
-            <div class="card">
-                <h3>Genel Stok Durumu</h3>
+        <div id="dashboard" style="display:none; padding:20px;">
+            <div class="card" style="background:white; padding:15px; border-radius:10px;">
+                <h3 style="text-align:center;">Stok Durumu</h3>
+                <div id="stok-uyari" style="color:red; font-weight:bold; text-align:center; margin-bottom:10px;"></div>
                 <canvas id="stokGrafik"></canvas>
             </div>
         </div>
-    </div>
-</main>
+    </main>
 
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
