@@ -44,38 +44,6 @@
     </div>
 </main>
 
-<script>
-    let kasa = 0;
-    let mevcutStok = 100;
-
-    function panelAc(id) {
-        document.getElementById('satis-panel').style.display = (id === 'satis-panel' ? 'block' : 'none');
-        document.getElementById('dashboard').style.display = (id === 'dashboard' ? 'block' : 'none');
-    }
-
-    function satisYap() {
-        let fiyat = document.getElementById('urun-liste').value;
-        let adet = document.getElementById('satis-adet').value;
-        if(adet > 0) {
-            kasa += (fiyat * adet);
-            mevcutStok -= (adet * 2);
-            document.getElementById('kasa-toplam').innerText = kasa;
-            myChart.data.datasets[0].data = [mevcutStok, 100 - mevcutStok];
-            myChart.update();
-            alert("Satış Kaydedildi!");
-            panelAc('dashboard');
-        }
-    }
-
-    const ctx = document.getElementById('stokGrafik').getContext('2d');
-    const myChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Stokta', 'Satılan'],
-            datasets: [{ data: [mevcutStok, 0], backgroundColor: ['#2ecc71', '#eee'] }]
-        }
-    });
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
