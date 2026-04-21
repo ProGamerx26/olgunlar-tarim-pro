@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olgunlar Tarım Pro - Çınar Yazılım</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; }
+        
+        /* Üst Başlık */
+        header { background: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #2ecc71; }
+        .logo-area h1 { color: #27ae60; font-size: 24px; font-weight: bold; }
+        .logo-area span { color: #7f8c8d; font-size: 14px; }
+
+        /* Ana İçerik Alanı */
+        main { display: flex; flex: 1; overflow: hidden; }
+
+        /* Sol Menü (Taslağındaki Butonlar) */
+        nav { width: 300px; background: #fff; padding: 20px; display: flex; flex-direction: column; gap: 15px; border-right: 1px solid #ddd; }
+        .menu-btn { padding: 20px; border-radius: 12px; color: white; text-decoration: none; font-weight: bold; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.3s; border: none; cursor: pointer; }
+        .menu-btn:active { transform: scale(0.95); }
+        .btn-satis { background: #3498db; }
+        .btn-stok { background: #2ecc71; }
+        .btn-musteri { background: #9b59b6; }
+        .btn-kasa { background: #e74c3c; }
+        .btn-yonetim { background: #1abc9c; }
+
+        /* Sağ İstatistik Alanı */
+        .dashboard { flex: 1; padding: 25px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .chart-card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center; }
+        
+        /* Uyarı Paneli */
+        .alerts { grid-column: 1 / -1; background: #fff5f5; border: 2px solid #feb2b2; padding: 20px; border-radius: 15px; color: #c53030; }
+
+        footer { background: white; text-align: center; padding: 10px; font-size: 12px; color: #7f8c8d; border-top: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-area">
+        <h1>OLGUNLAR TARIM PRO</h1>
+        <span>Çınar Yazılım</span>
+    </div>
+</header>
+
+<main>
+    <nav>
+        <button class="menu-btn btn-satis">SATIŞ</button>
+        <button class="menu-btn btn-stok">STOK YÖNETİMİ</button>
+        <button class="menu-btn btn-musteri">MÜŞTERİLER</button>
+        <button class="menu-btn btn-kasa">KASA</button>
+        <button class="menu-btn btn-yonetim">YÖNETİM</button>
+    </nav>
+
+    <div class="dashboard">
+        <div class="chart-card">
+            <h3>Gübre Stoğu</h3>
+            <canvas id="gubreChart"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3>Tohum Stoğu</h3>
+            <canvas id="tohumChart"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3>İlaç Stoğu</h3>
+            <canvas id="ilacChart"></canvas>
+        </div>
+        <div class="alerts">
+            <strong>⚠️ KRİTİK STOK UYARILARI:</strong>
+            <p>Üre Gübresi 50kg - Son 5 Adet! | Mısır Tohumu - Stok Tükendi!</p>
+        </div>
+    </div>
+</main>
+
+<footer>© 2024 ÇINAR YAZILIM. Tüm Hakları Saklıdır.</footer>
+
+<script>
+    // Grafik Ayarları
+    const config = (color) => ({
+        type: 'doughnut',
+        data: { datasets: [{ data: [70, 30], backgroundColor: [color, '#eee'] }] }
+    });
+
+    new Chart(document.getElementById('gubreChart'), config('#2ecc71'));
+    new Chart(document.getElementById('tohumChart'), config('#3498db'));
+    new Chart(document.getElementById('ilacChart'), config('#f1c40f'));
+</script>
+
+</body>
+</html>
